@@ -1,0 +1,59 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.omg.dao.GoodsCategoryDao">
+
+    <!--条件查询-->
+    <select id="queryList" parameterType="GoodsCategory" resultType="GoodsCategory">
+        SELECT
+          goods_category_id,goods_category_name,create_time,update_time,create_person
+        from
+          goods_category where 1=1
+        <if test="goodsCategoryName != null and !&quot;&quot;.equals(goodsCategoryName.trim())">
+           AND goods_category_name = #{goodsCategoryName}
+        </if>
+        <if test="createPerson != null and !&quot;&quot;.equals(createPerson.trim())">
+            AND create_person like '%' #{createPerson} '%'
+        </if>
+    </select>
+
+    <select id="queryById" parameterType="Integer" resultType="GoodsCategory">
+        SELECT
+          goods_category_id,goods_category_name,create_time,update_time,create_person
+        from
+          goods_category
+        WHERE
+          goods_category_id=#{goodsCategoryId}
+    </select>
+
+    <!--删除单条-->
+    <delete id="deleteCategory">
+        DELETE from goods_category WHERE goods_category_id = #{categoryId}
+    </delete>
+
+    <!-- 批量删除-->
+    <delete id="deleteBatch">
+        DELETE from goods_category WHERE goods_category_id in(
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </delete>
+
+    <!--增加-->
+    <update id="addGoodsCategory">
+       INSERT INTO goods_category (goods_category_name, create_person) VALUES (#{goodsCategoryName},#{createPerson});
+    </update>
+
+    <!--更新-->
+    <update id="updateGoodsCategory">
+       UPDATE
+          goods_category
+       set
+          goods_category_name = #{goodsCategoryName},
+          create_person = #{createPerson}
+       WHERE
+          goods_category_id=#{goodsCategoryId}
+    </update>
+
+</mapper>
